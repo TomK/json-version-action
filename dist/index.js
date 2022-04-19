@@ -8460,56 +8460,108 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
-const { setOutput, setFailed } = __nccwpck_require__(6024);
-const { GitHub, context } = __nccwpck_require__(5016);
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5016);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(6024);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_1__);
 
-const getPackageJson = async (ref, octokit) => {
-    const packageJSONData = (await octokit.rest.repos.getContent({
-        ...context.repo,
-        path: process.env['INPUT_PATH'] || 'package.json',
-        ref,
-    })).data.content;
-    if (!packageJSONData) {
-        throw new Error(`Could not find package.json for commit ${ref}`);
-    }
-    return JSON.parse(Buffer.from(packageJSONData, 'base64').toString());
+
+
+const getPackageJson = async (ref, octokit) =>
+{
+  const packageJSONData = (await octokit.rest.repos.getContent({
+    ..._actions_github__WEBPACK_IMPORTED_MODULE_0__.context.repo,
+    path: process.env['INPUT_PATH'] || 'package.json',
+    ref,
+  })).data.content;
+  if (!packageJSONData)
+  {
+    throw new Error(`Could not find package.json for commit ${ref}`);
+  }
+  return JSON.parse(Buffer.from(packageJSONData, 'base64').toString());
 };
 
-const run = async () => {
-    const token = process.env['GITHUB_TOKEN'];
-    if (!token) {
-        throw new Error('GITHUB_TOKEN not provided');
-    }
+const run = async () =>
+{
+  const token = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)('GITHUB_TOKEN', {required: true});
+  if (!token)
+  {
+    throw new Error('GITHUB_TOKEN not provided');
+  }
 
-    const octokit = new GitHub(token);
-    const currentRef = context.sha;
-    const previousRef = ((await octokit.repos.getCommit({
-        ...context.repo,
-        ref: currentRef,
-    })).data.parents[0] || {}).sha;
+  const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_0__.getOctokit(token);
+  const currentRef = _actions_github__WEBPACK_IMPORTED_MODULE_0__.context.sha;
+  const previousRef = ((await octokit.rest.repos.getCommit({
+    ..._actions_github__WEBPACK_IMPORTED_MODULE_0__.context.repo,
+    ref: currentRef,
+  })).data.parents[0] || {}).sha;
 
-    const currentPackageJSON = await getPackageJson(currentRef, octokit);
-    setOutput('current-package-version', currentPackageJSON.version);
+  const currentPackageJSON = await getPackageJson(currentRef, octokit);
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput)('current-package-version', currentPackageJSON.version);
 
-    if (!previousRef) {
-        setOutput('has-updated', true);
-        return;
-    }
+  if (!previousRef)
+  {
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput)('has-updated', true);
+    return;
+  }
 
-    const previousPackageJSON = await getPackageJson(previousRef, octokit);
-    setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
-}
+  const previousPackageJSON = await getPackageJson(previousRef, octokit);
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput)('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
+};
 
-run().catch(error => {
-    setFailed(error.message);
+run().catch(error =>
+{
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setFailed)(error.message);
 });
 
 })();
