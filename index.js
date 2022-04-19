@@ -1,5 +1,5 @@
 import {context, getOctokit} from '@actions/github';
-import {getInput, setFailed, setOutput} from '@actions/core';
+import {setFailed, setOutput} from '@actions/core';
 
 const getPackageJson = async (ref, octokit) =>
 {
@@ -17,7 +17,7 @@ const getPackageJson = async (ref, octokit) =>
 
 const run = async () =>
 {
-  const token = getInput('GITHUB_TOKEN', {required: true});
+  const token = process.env.GITHUB_TOKEN;
   if (!token)
   {
     throw new Error('GITHUB_TOKEN not provided');

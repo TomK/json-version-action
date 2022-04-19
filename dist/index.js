@@ -8533,7 +8533,7 @@ const getPackageJson = async (ref, octokit) =>
 
 const run = async () =>
 {
-  const token = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)('GITHUB_TOKEN', {required: true});
+  const token = process.env.GITHUB_TOKEN;
   if (!token)
   {
     throw new Error('GITHUB_TOKEN not provided');
