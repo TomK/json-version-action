@@ -8460,67 +8460,21 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5016);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(6024);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_1__);
-
-
+const github = __nccwpck_require__(5016);
+const core = __nccwpck_require__(6024);
 
 const getPackageJson = async (ref, octokit) =>
 {
   const packageJSONData = (await octokit.rest.repos.getContent({
-    ...(_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.repo),
+    ...github.context.repo,
     path: process.env['INPUT_PATH'] || 'package.json',
     ref,
   })).data.content;
@@ -8539,33 +8493,33 @@ const run = async () =>
     throw new Error('GITHUB_TOKEN not provided');
   }
 
-  const octokit = new (_actions_github__WEBPACK_IMPORTED_MODULE_0___default().getOctokit)(token);
-  const currentRef = (_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.sha);
-  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('current ref' + currentRef);
+  const octokit = new github.getOctokit(token);
+  const currentRef = github.context.sha;
+  core.info('current ref' + currentRef);
   const previousRef = ((await octokit.rest.repos.getCommit({
-    ...(_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.repo),
+    ...github.context.repo,
     ref: currentRef,
   })).data.parents[0] || {}).sha;
-  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('previous ref' + previousRef);
+  core.info('previous ref' + previousRef);
 
   const currentPackageJSON = await getPackageJson(currentRef, octokit);
-  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('current package' + currentPackageJSON.version);
-  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('current-package-version', currentPackageJSON.version);
+  core.info('current package' + currentPackageJSON.version);
+  core.setOutput('current-package-version', currentPackageJSON.version);
 
   if (!previousRef)
   {
-    _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('has-updated', true);
+    core.setOutput('has-updated', true);
     return;
   }
 
   const previousPackageJSON = await getPackageJson(previousRef, octokit);
-  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('previous package' + previousPackageJSON.version);
-  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
+  core.info('previous package' + previousPackageJSON.version);
+  core.setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
 };
 
 run().catch(error =>
 {
-  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setFailed(error.message);
+  core.setFailed(error.message);
 });
 
 })();
