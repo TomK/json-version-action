@@ -24,8 +24,9 @@ const run = async () =>
   }
 
   const octokit = new github.getOctokit(token);
-  const currentRef = github.context.sha;
+  const currentRef = github.context.ref;
   core.info('current ref' + currentRef);
+
   const previousRef = ((await octokit.rest.repos.getCommit({
     ...github.context.repo,
     ref: currentRef,
