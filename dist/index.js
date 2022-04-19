@@ -8520,7 +8520,7 @@ __nccwpck_require__.r(__webpack_exports__);
 const getPackageJson = async (ref, octokit) =>
 {
   const packageJSONData = (await octokit.rest.repos.getContent({
-    ..._actions_github__WEBPACK_IMPORTED_MODULE_0__.context.repo,
+    ...(_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.repo),
     path: process.env['INPUT_PATH'] || 'package.json',
     ref,
   })).data.content;
@@ -8539,29 +8539,32 @@ const run = async () =>
     throw new Error('GITHUB_TOKEN not provided');
   }
 
-  const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_0__.getOctokit(token);
-  const currentRef = _actions_github__WEBPACK_IMPORTED_MODULE_0__.context.sha;
+  const octokit = new (_actions_github__WEBPACK_IMPORTED_MODULE_0___default().getOctokit)(token);
+  const currentRef = (_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.sha);
+  console.log('current ref', currentRef);
   const previousRef = ((await octokit.rest.repos.getCommit({
-    ..._actions_github__WEBPACK_IMPORTED_MODULE_0__.context.repo,
+    ...(_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.repo),
     ref: currentRef,
   })).data.parents[0] || {}).sha;
+  console.log('previous ref', previousRef);
 
   const currentPackageJSON = await getPackageJson(currentRef, octokit);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput)('current-package-version', currentPackageJSON.version);
+  console.log('current package', currentPackageJSON);
+  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('current-package-version', currentPackageJSON.version);
 
   if (!previousRef)
   {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput)('has-updated', true);
+    _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('has-updated', true);
     return;
   }
 
   const previousPackageJSON = await getPackageJson(previousRef, octokit);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput)('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
+  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
 };
 
 run().catch(error =>
 {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setFailed)(error.message);
+  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setFailed(error.message);
 });
 
 })();

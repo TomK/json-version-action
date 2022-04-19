@@ -1,10 +1,10 @@
-import {context, getOctokit} from '@actions/github';
-import {setFailed, setOutput} from '@actions/core';
+import github from '@actions/github';
+import core from '@actions/core';
 
 const getPackageJson = async (ref, octokit) =>
 {
   const packageJSONData = (await octokit.rest.repos.getContent({
-    ...context.repo,
+    ...github.context.repo,
     path: process.env['INPUT_PATH'] || 'package.json',
     ref,
   })).data.content;
@@ -23,27 +23,30 @@ const run = async () =>
     throw new Error('GITHUB_TOKEN not provided');
   }
 
-  const octokit = new getOctokit(token);
-  const currentRef = context.sha;
+  const octokit = new github.getOctokit(token);
+  const currentRef = github.context.sha;
+  console.log('current ref', currentRef);
   const previousRef = ((await octokit.rest.repos.getCommit({
-    ...context.repo,
+    ...github.context.repo,
     ref: currentRef,
   })).data.parents[0] || {}).sha;
+  console.log('previous ref', previousRef);
 
   const currentPackageJSON = await getPackageJson(currentRef, octokit);
-  setOutput('current-package-version', currentPackageJSON.version);
+  console.log('current package', currentPackageJSON);
+  core.setOutput('current-package-version', currentPackageJSON.version);
 
   if (!previousRef)
   {
-    setOutput('has-updated', true);
+    core.setOutput('has-updated', true);
     return;
   }
 
   const previousPackageJSON = await getPackageJson(previousRef, octokit);
-  setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
+  core.setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
 };
 
 run().catch(error =>
 {
-  setFailed(error.message);
+  core.setFailed(error.message);
 });
