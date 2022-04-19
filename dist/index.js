@@ -8541,15 +8541,15 @@ const run = async () =>
 
   const octokit = new (_actions_github__WEBPACK_IMPORTED_MODULE_0___default().getOctokit)(token);
   const currentRef = (_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.sha);
-  console.log('current ref', currentRef);
+  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('current ref' + currentRef);
   const previousRef = ((await octokit.rest.repos.getCommit({
     ...(_actions_github__WEBPACK_IMPORTED_MODULE_0___default().context.repo),
     ref: currentRef,
   })).data.parents[0] || {}).sha;
-  console.log('previous ref', previousRef);
+  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('previous ref' + previousRef);
 
   const currentPackageJSON = await getPackageJson(currentRef, octokit);
-  console.log('current package', currentPackageJSON);
+  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('current package' + currentPackageJSON.version);
   _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('current-package-version', currentPackageJSON.version);
 
   if (!previousRef)
@@ -8559,6 +8559,7 @@ const run = async () =>
   }
 
   const previousPackageJSON = await getPackageJson(previousRef, octokit);
+  _actions_core__WEBPACK_IMPORTED_MODULE_1___default().info('previous package' + previousPackageJSON.version);
   _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
 };
 

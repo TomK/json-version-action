@@ -25,15 +25,15 @@ const run = async () =>
 
   const octokit = new github.getOctokit(token);
   const currentRef = github.context.sha;
-  console.log('current ref', currentRef);
+  core.info('current ref' + currentRef);
   const previousRef = ((await octokit.rest.repos.getCommit({
     ...github.context.repo,
     ref: currentRef,
   })).data.parents[0] || {}).sha;
-  console.log('previous ref', previousRef);
+  core.info('previous ref' + previousRef);
 
   const currentPackageJSON = await getPackageJson(currentRef, octokit);
-  console.log('current package', currentPackageJSON);
+  core.info('current package' + currentPackageJSON.version);
   core.setOutput('current-package-version', currentPackageJSON.version);
 
   if (!previousRef)
@@ -43,6 +43,7 @@ const run = async () =>
   }
 
   const previousPackageJSON = await getPackageJson(previousRef, octokit);
+  core.info('previous package' + previousPackageJSON.version);
   core.setOutput('has-updated', currentPackageJSON.version !== previousPackageJSON.version);
 };
 
