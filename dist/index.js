@@ -8496,6 +8496,7 @@ const run = async () =>
   const octokit = new github.getOctokit(token);
   const currentRef = github.context.sha;
   core.info('current ref' + currentRef);
+  core.info('previous ref search' + github.context.ref);
 
   const previousRef = ((await octokit.rest.repos.getCommit({
     ...github.context.repo,
