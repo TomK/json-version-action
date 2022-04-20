@@ -1,46 +1,54 @@
 # GitHub Action to detect changes in package.json version
 
-This action outputs a variable 'has-updated' indicating that the package.json version was updated in the most recent commit.
+This action parses a json file and outputs the version has changed. Optionally diffs the version with another specified
+version.
 
 ## Inputs
 
+### `repo-token`
+
+The GITHUB_TOKEN secret
+
 ### `path`
 
-Sets the path to the package.json. Default 'package.json'.
+Sets the path to the json file. Default 'package.json'.
+
+### `compare`
+
+The version to compare to against. Will populate the `version-diff` output.
 
 ## Outputs
 
-### `has-updated`
+### `version`
 
-Whether the package.json version has updated.
+The content of the version key in the specified json file.
 
-### `current-package-version`
+### `version-diff`
 
-The current package.json version
+semver diff between the version and the compare version.
 
 ## Example usage
 
 ```
 jobs:
-  run-build-if-needed:
+  build-only-major:
     runs-on: ubuntu-latest
     steps:
-    - uses: MontyD/package-json-updated-action
-      id: version-updated
+    - uses: TomK/json-version-action
+      id: version
       with:
-        path: package.json
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        compare: 0.0.0
     - uses: actions/checkout@v1
-      if: steps.version-updated.outputs.has-updated
+      if: steps.version.outputs.version-diff == 'major'
       with:
         fetch-depth: 1
     - uses: actions/setup-node@v1
-      if: steps.version-updated.outputs.has-updated
+      if: steps.version.outputs.version-diff == 'major'
       with:
         node-version: '12.x'
     - run: npm install
-      if: steps.version-updated.outputs.has-updated
+      if: steps.version.outputs.version-diff == 'major'
     - run: npm run build
-      if: steps.version-updated.outputs.has-updated
+      if: steps.version.outputs.version-diff == 'major'
 ```
