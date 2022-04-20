@@ -1,7 +1,7 @@
 {
   "name": "json-version-action",
   "version": "1.0.0",
-  "description": "A GitHub Action which indicates when the package.json version has updated in the most recent commit",
+  "description": "A GitHub Action to retrieve/compare the version of a JSON file",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc && ncc build lib/main.js",

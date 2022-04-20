@@ -1,4 +1,4 @@
-# GitHub Action to detect changes in package.json version
+# A GitHub Action to retrieve/compare the version of a JSON file
 
 This action parses a json file and outputs the version has changed. Optionally diffs the version with another specified
 version.
