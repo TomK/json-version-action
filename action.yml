@@ -1,18 +1,24 @@
-name: 'Package Version Updated'
-description: 'Indicates when the package.json version has updated in the most recent commit'
+name: 'JSON Version'
+description: 'Returns the version key from the specified json file'
 branding:
   icon: 'arrow-up'
   color: 'yellow'
 inputs:
+  repo-token:
+    description: 'The GITHUB_TOKEN secret'
+    required: true
   path:
-    description: 'The path to the package.json'
+    description: 'The path to the json file'
     required: false
     default: 'package.json'
+  compare:
+    description: 'The version to compare to against'
+    required: false
 outputs:
-  has-updated:
-    description: 'Whether the package.json version has been updated'
-  current-package-version:
-    description: 'The current package.json version'
+  version:
+    description: 'The current version'
+  version-diff:
+    description: 'The semver diff'
 runs:
   using: 'node16'
   main: 'dist/index.js'
